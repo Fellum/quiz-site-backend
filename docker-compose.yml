@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=quiz-site
+      - POSTGRES_USER=quiz-site
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - TZ=UTC
+    ports:
+      - 5432
+    volumes:
+      - quizpostgres:/var/lib/postgresql/data
+
+  web:
+    build: .
+    command: 'npm start'
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "80:8080"
+    depends_on:
+      - postgres
+      # - migration
+volumes:
+  quizpostgres:
+    external: true
+
+  # migration:
+  #   build: .
+  #   command: 'npm run migrate'
+  #   volumes:
+  #     - .:/usr/app/
+  #     - /usr/app/node_modules
+  #   environment:
+  #     - NODE_ENV=production
+  #   depends_on:
+  #     - postgres
