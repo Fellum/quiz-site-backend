@@ -4,8 +4,8 @@ services:
   postgres:
     image: postgres:15
     environment:
-      - POSTGRES_DB=quiz-site
-      - POSTGRES_USER=quiz-site
+      - POSTGRES_DB=quiz_site
+      - POSTGRES_USER=quiz_site
       - POSTGRES_HOST_AUTH_METHOD=trust
       - TZ=UTC
     ports:
