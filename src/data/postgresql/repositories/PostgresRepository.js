@@ -11,7 +11,34 @@ export default class PostgresRepository {
       .first()
   }
 
-  static find (query = {}, view = '*') {
+  static findAndCount (query = {}, view = '*', options = { offset: 0, limit: 0 }) {
+    const { ids, ...basicQuery } = query
+
+    const additionalQuery = query => {
+      if (!_.isEmpty(ids)) query.whereIn('id', ids)
+    }
+
+    const commonQuery = knex(this.tableName)
+      .where(basicQuery)
+      .where(additionalQuery)
+
+    const valuesQuery = commonQuery
+      .clone()
+      .select(view)
+      .offset(options.offset)
+      .limit(options.limit)
+
+    const countQuery = commonQuery
+      .clone()
+      .count()
+      .returning('count')
+      .first()
+      .then(({ count }) => count)
+
+    return Promise.all([valuesQuery, countQuery])
+  }
+
+  static find (query = {}, view = '*', options = { offset: 0, limit: 0 }) {
     const { ids, ...basicQuery } = query
 
     const additionalQuery = query => {
@@ -22,6 +49,8 @@ export default class PostgresRepository {
       .select(view)
       .where(basicQuery)
       .where(additionalQuery)
+      .offset(options.offset)
+      .limit(options.limit)
   }
 
   static create (value) {

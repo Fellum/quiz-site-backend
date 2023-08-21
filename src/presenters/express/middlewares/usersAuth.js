@@ -3,7 +3,7 @@ import { jwtVerify } from '../../../services/auth.js'
 
 export default (options = {}) => async (request, response, next) => {
   try {
-    const { sessionId } = jwtVerify(request.body.token, options)
+    const { sessionId } = jwtVerify(request.headers.authtoken, options)
     const { user, session } = await authenticateUseCase(sessionId)
     request.session = session
     request.user = user

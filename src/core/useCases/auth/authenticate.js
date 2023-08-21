@@ -9,6 +9,7 @@ export function buildUseCase ({
     const session = await sessionRepository.findOne({ id: sessionId })
     if (!session) throw new Error('Session expired')
 
+    if (session.type !== 'user') return { session, user: undefined }
     const user = await userRepository.findOne({ id: session.userId })
     if (!user) throw new Error('User not found')
 
