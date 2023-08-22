@@ -12,6 +12,14 @@ services:
       - 127.0.0.1:5432:5432
     tmpfs:
       - /var/lib/postgresql/data
+  
+  redis:
+    image: redis/redis-stack-server:latest
+    command: ["redis-server", "--appendonly yes", "--save 60 1000",  "--requirepass redisPassword"]
+    ports:
+      - 127.0.0.1:6379:6379
+    tmpfs:
+      - /data
 
   # migration:
   #   build: .

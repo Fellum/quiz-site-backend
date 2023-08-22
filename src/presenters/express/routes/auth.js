@@ -2,8 +2,10 @@ import { Router } from 'express'
 import loginUseCase from '../../../core/useCases/auth/login.js'
 import logoutUseCase from '../../../core/useCases/auth/logout.js'
 import refreshTokenUseCase from '../../../core/useCases/auth/refreshToken.js'
-import usersAuth from '../middlewares/usersAuth.js'
 import startSessionUseCase from '../../../core/useCases/auth/startSession.js'
+import withJWT from '../middlewares/withJWT.js'
+import withSession from '../middlewares/withSession.js'
+import withUser from '../middlewares/withUser.js'
 
 const router = Router()
 
@@ -27,7 +29,7 @@ router.get('/startSession', async (request, response) => {
     })
 })
 
-router.post('/logout', usersAuth(), async (request, response) => {
+router.post('/logout', withJWT(), withSession(), withUser(), async (request, response) => {
   const { session: { id: sessionId } } = request
   await logoutUseCase(sessionId)
     .catch(err => {
@@ -37,7 +39,7 @@ router.post('/logout', usersAuth(), async (request, response) => {
   response.end()
 })
 
-router.post('/refreshToken', usersAuth({ ignoreExpiration: true }), async (request, response) => {
+router.post('/refreshToken', withJWT({ ignoreExpiration: true }), withSession(), withUser(), async (request, response) => {
   const { refreshToken } = request.body
   const { session: { id: sessionId } } = request
   await refreshTokenUseCase(sessionId, refreshToken)

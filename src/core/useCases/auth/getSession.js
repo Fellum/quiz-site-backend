@@ -4,7 +4,10 @@ export function buildUseCase ({
   sessionRepository
 }) {
   return async (sessionId) => {
-    await sessionRepository.deleteById(sessionId)
+    const session = await sessionRepository.getById(sessionId)
+    if (!session) throw new Error('Session expired')
+
+    return session
   }
 }
 

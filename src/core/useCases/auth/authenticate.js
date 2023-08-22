@@ -1,12 +1,12 @@
 import UserRepository from '../../../data/postgresql/repositories/UserRepository.js'
-import SessionRepository from '../../../data/postgresql/repositories/SessionRepository.js'
+import SessionRepository from '../../../data/redis/repositories/SessionRepository.js'
 
 export function buildUseCase ({
   userRepository,
   sessionRepository
 }) {
   return async (sessionId) => {
-    const session = await sessionRepository.findOne({ id: sessionId })
+    const session = await sessionRepository.getById(sessionId)
     if (!session) throw new Error('Session expired')
 
     if (session.type !== 'user') return { session, user: undefined }

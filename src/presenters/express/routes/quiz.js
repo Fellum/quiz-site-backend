@@ -6,14 +6,15 @@ import findUseCase from '../../../core/useCases/quizzes/find.js'
 import getByIdUseCase from '../../../core/useCases/quizzes/getById.js'
 import deleteUseCase from '../../../core/useCases/quizzes/delete.js'
 import updateUseCase from '../../../core/useCases/quizzes/update.js'
-
-import usersAuth from '../middlewares/usersAuth.js'
+import withJWT from '../middlewares/withJWT.js'
+import withSession from '../middlewares/withSession.js'
+import withUser from '../middlewares/withUser.js'
 
 const router = Router()
 
-router.use(usersAuth())
+router.use(withJWT(), withSession())
 
-router.post('/', usersAuth(), async (request, response) => {
+router.post('/', withUser(), async (request, response) => {
   const { title, description } = request.body
   const { id: ownerUserId } = request.user
 
@@ -34,7 +35,7 @@ router.get('/:id', async (request, response) => {
     })
 })
 
-router.patch('/', usersAuth(), async (request, response) => {
+router.patch('/', withUser(), async (request, response) => {
   const { id, title, description } = request.body
   const { id: userId } = request.user
 
@@ -63,7 +64,7 @@ router.get('/', async (request, response) => {
     })
 })
 
-router.delete('/', usersAuth(), async (request, response) => {
+router.delete('/', withUser(), async (request, response) => {
   const { id: userId } = request.user
   const { id: quizId } = request.body
 

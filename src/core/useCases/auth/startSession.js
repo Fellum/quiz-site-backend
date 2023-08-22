@@ -1,4 +1,4 @@
-import SessionRepository from '../../../data/postgresql/repositories/SessionRepository.js'
+import SessionRepository from '../../../data/redis/repositories/SessionRepository.js'
 import * as authService from '../../../services/auth.js'
 
 export function buildUseCase ({

@@ -1,6 +1,5 @@
 import express, { json } from 'express'
 import router from './presenters/express/routes/index.js'
-
 const app = express()
 
 app.use(json())
