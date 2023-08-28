@@ -3,6 +3,7 @@ import loginUseCase from '../../../core/useCases/auth/login.js'
 import logoutUseCase from '../../../core/useCases/auth/logout.js'
 import refreshTokenUseCase from '../../../core/useCases/auth/refreshToken.js'
 import startSessionUseCase from '../../../core/useCases/auth/startSession.js'
+import registerUseCase from '../../../core/useCases/auth/register.js'
 import withJWT from '../middlewares/withJWT.js'
 import withSession from '../middlewares/withSession.js'
 import withUser from '../middlewares/withUser.js'
@@ -44,6 +45,17 @@ router.post('/refreshToken', withJWT({ ignoreExpiration: true }), withSession(),
   const { session: { id: sessionId } } = request
   await refreshTokenUseCase(sessionId, refreshToken)
     .then((res) => response.send(res))
+    .catch(err => {
+      console.log(err)
+      response.send(err.message)
+    })
+})
+
+router.post('/register', async (request, response) => {
+  const { email, username, password } = request.body
+
+  await registerUseCase({ email, username, password })
+    .then(res => response.send(res))
     .catch(err => {
       console.log(err)
       response.send(err.message)
