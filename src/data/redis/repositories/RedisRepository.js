@@ -4,6 +4,7 @@ import _ from 'lodash'
 
 export default class RedisRepository {
   static tableName
+  static expireTime // time in seconds
 
   static toRedisId (id) {
     return `${this.tableName}:${id}`
@@ -18,6 +19,7 @@ export default class RedisRepository {
     const id = uuid.v4()
     const redisId = this.toRedisId(id)
     await connection.hSet(redisId, value)
+    if (this.expireTime) { await connection.expire(redisId, this.expireTime) }
     const savedValue = await connection.hGetAll(redisId)
     return {
       id,
