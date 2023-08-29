@@ -4,6 +4,14 @@ import _ from 'lodash'
 export default class PostgresRepository {
   static tableName
 
+  static getQueryBuilder () {
+    return knex(this.tableName)
+  }
+
+  static getKnex () {
+    return knex
+  }
+
   static findOne (query = {}, view = '*') {
     return knex(this.tableName)
       .select(view)
@@ -53,10 +61,10 @@ export default class PostgresRepository {
       .limit(options.limit)
   }
 
-  static create (value) {
+  static create (value, view = '*') {
     return knex(this.tableName)
       .insert(value)
-      .returning('*')
+      .returning(view)
       .then(([res]) => res)
   }
 

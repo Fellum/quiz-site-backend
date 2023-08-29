@@ -5,6 +5,6 @@ export default () => async (request, response, next) => {
     request.user = await getUserUseCase(request.session)
     next()
   } catch (err) {
-    next(err.message)
+    next(err)
   }
 }

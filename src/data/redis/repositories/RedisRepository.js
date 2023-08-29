@@ -38,6 +38,6 @@ export default class RedisRepository {
   }
 
   static deleteById (id) {
-    return connection.hDel(this.toRedisId(id))
+    return connection.del(this.toRedisId(id))
   }
 }

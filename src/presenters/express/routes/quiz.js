@@ -14,67 +14,60 @@ const router = Router()
 
 router.use(withJWT(), withSession())
 
-router.post('/', withUser(), async (request, response) => {
-  const { title, description } = request.body
-  const { id: ownerUserId } = request.user
+router.post('/',
+  withUser(),
+  async (request, response, next) => {
+    const { title, description } = request.body
+    const { id: ownerUserId } = request.user
 
-  await createUseCase({ title, description, ownerUserId })
-    .then(res => response.send(res))
-    .catch(err => {
-      console.log(err)
-      response.send(err.message)
-    })
-})
+    await createUseCase({ title, description, ownerUserId })
+      .then(res => response.send(res))
+      .catch(next)
+  })
 
-router.get('/:id', async (request, response) => {
-  await getByIdUseCase(request.params.id)
-    .then(res => response.send(res))
-    .catch(err => {
-      console.log(err)
-      response.send(err.message)
-    })
-})
+router.get('/:id',
+  async (request, response, next) => {
+    await getByIdUseCase(request.params.id)
+      .then(res => response.send(res))
+      .catch(next)
+  })
 
-router.patch('/', withUser(), async (request, response) => {
-  const { id, title, description } = request.body
-  const { id: userId } = request.user
+router.patch('/',
+  withUser(),
+  async (request, response, next) => {
+    const { id, title, description } = request.body
+    const { id: userId } = request.user
 
-  const value = _.omitBy({
-    id,
-    title,
-    description
-  }, _.isUndefined)
+    const value = _.omitBy({
+      id,
+      title,
+      description
+    }, _.isUndefined)
 
-  await updateUseCase(userId, value)
-    .then(res => response.send(res))
-    .catch(err => {
-      console.log(err)
-      response.send(err.message)
-    })
-})
+    await updateUseCase(userId, value)
+      .then(res => response.send(res))
+      .catch(next)
+  })
 
-router.get('/', async (request, response) => {
-  const { offset, limit } = request.body
+router.get('/',
+  async (request, response, next) => {
+    const { offset, limit } = request.body
 
-  await findUseCase({ offset, limit })
-    .then(res => response.send(res))
-    .catch(err => {
-      console.log(err)
-      response.send(err.message)
-    })
-})
+    await findUseCase({ offset, limit })
+      .then(res => response.send(res))
+      .catch(next)
+  })
 
-router.delete('/', withUser(), async (request, response) => {
-  const { id: userId } = request.user
-  const { id: quizId } = request.body
+router.delete('/',
+  withUser(),
+  async (request, response, next) => {
+    const { id: userId } = request.user
+    const { id: quizId } = request.body
 
-  await deleteUseCase(userId, quizId)
-    .then(res => response.send(res))
-    .catch(err => {
-      console.log(err)
-      response.send(err.message)
-    })
-  response.end()
-})
+    await deleteUseCase(userId, quizId)
+      .then(res => response.send(res))
+      .catch(next)
+    response.end()
+  })
 
 export default router

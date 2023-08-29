@@ -6,6 +6,6 @@ export default (options = {}) => async (request, response, next) => {
     request.jwtPayload = payload
     next()
   } catch (err) {
-    next(err.message)
+    next(err)
   }
 }

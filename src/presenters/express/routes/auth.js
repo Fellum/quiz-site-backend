@@ -10,56 +10,51 @@ import withUser from '../middlewares/withUser.js'
 
 const router = Router()
 
-router.post('/login', async (request, response) => {
-  const { email, password } = request.body
+router.post('/login',
+  async (request, response, next) => {
+    const { email, password } = request.body
 
-  await loginUseCase(email, password)
-    .then(res => response.send(res))
-    .catch(err => {
-      console.log(err)
-      response.send(err.message)
-    })
-})
+    await loginUseCase(email, password)
+      .then(res => response.send(res))
+      .catch(next)
+  })
 
-router.get('/startSession', async (request, response) => {
-  await startSessionUseCase()
-    .then(res => response.send(res))
-    .catch(err => {
-      console.log(err)
-      response.send(err.message)
-    })
-})
+router.get('/startSession',
+  async (request, response, next) => {
+    await startSessionUseCase()
+      .then(res => response.send(res))
+      .catch(next)
+  })
 
-router.post('/logout', withJWT(), withSession(), withUser(), async (request, response) => {
-  const { session: { id: sessionId } } = request
-  await logoutUseCase(sessionId)
-    .catch(err => {
-      console.log(err)
-      response.send(err.message)
-    })
-  response.end()
-})
+router.post('/logout',
+  withJWT(),
+  withSession(),
+  withUser(),
+  async (request, response, next) => {
+    const { session: { id: sessionId } } = request
+    await logoutUseCase(sessionId)
+      .catch(next)
+    response.end()
+  })
 
-router.post('/refreshToken', withJWT({ ignoreExpiration: true }), withSession(), withUser(), async (request, response) => {
-  const { refreshToken } = request.body
-  const { session: { id: sessionId } } = request
-  await refreshTokenUseCase(sessionId, refreshToken)
-    .then((res) => response.send(res))
-    .catch(err => {
-      console.log(err)
-      response.send(err.message)
-    })
-})
+router.post('/refreshToken',
+  withJWT({ ignoreExpiration: true }),
+  withSession(),
+  withUser(),
+  async (request, response, next) => {
+    const { refreshToken } = request.body
+    const { session: { id: sessionId } } = request
+    await refreshTokenUseCase(sessionId, refreshToken)
+      .then((res) => response.send(res))
+      .catch(next)
+  })
 
-router.post('/register', async (request, response) => {
+router.post('/register', async (request, response, next) => {
   const { email, username, password } = request.body
 
   await registerUseCase({ email, username, password })
     .then(res => response.send(res))
-    .catch(err => {
-      console.log(err)
-      response.send(err.message)
-    })
+    .catch(next)
 })
 
 export default router
