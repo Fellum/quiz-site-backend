@@ -40,7 +40,6 @@ router.post('/logout',
 router.post('/refreshToken',
   withJWT({ ignoreExpiration: true }),
   withSession(),
-  withUser(),
   async (request, response, next) => {
     const { refreshToken } = request.body
     const { session: { id: sessionId } } = request
