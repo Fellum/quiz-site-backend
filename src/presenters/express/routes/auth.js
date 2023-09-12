@@ -8,34 +8,62 @@ import withJWT from '../middlewares/withJWT.js'
 import withSession from '../middlewares/withSession.js'
 import withUser from '../middlewares/withUser.js'
 
+import loginSchema from '../schemas/auth/login.js'
+import startSessionSchema from '../schemas/auth/startSession.js'
+import logoutSchema from '../schemas/auth/startSession.js'
+import registerSchema from '../schemas/auth/register.js'
+
+import registerMethod from '../helpers/registerMethod.js'
+
 const router = Router()
 
-router.post('/login',
-  async (request, response, next) => {
-    const { email, password } = request.body
+registerMethod(router, {
+  method: 'post',
+  route: '/login',
+  auth: 'none',
+  ...loginSchema
+}, async request => {
+  const { email, password } = request.body
+  const result = await loginUseCase(email, password)
+  return {
+    body: result
+  }
+})
 
-    await loginUseCase(email, password)
-      .then(res => response.send(res))
-      .catch(next)
-  })
+registerMethod(router, {
+  method: 'get',
+  route: '/startSession',
+  auth: 'none',
+  ...startSessionSchema
+}, async () => {
+  const result = await startSessionUseCase()
+  return {
+    body: result
+  }
+})
 
-router.get('/startSession',
-  async (request, response, next) => {
-    await startSessionUseCase()
-      .then(res => response.send(res))
-      .catch(next)
-  })
+registerMethod(router, {
+  method: 'post',
+  route: '/logout',
+  auth: 'user',
+  ...logoutSchema
+}, async request => {
+  const { session: { id: sessionId } } = request
+  await logoutUseCase(sessionId)
+  return {}
+})
 
-router.post('/logout',
-  withJWT(),
-  withSession(),
-  withUser(),
-  async (request, response, next) => {
-    const { session: { id: sessionId } } = request
-    await logoutUseCase(sessionId)
-      .catch(next)
-    response.end()
-  })
+registerMethod(router, {
+  method: 'post',
+  route: '/register',
+  auth: 'none',
+  ...registerSchema
+}, async request => {
+  const { email, username, password } = request.body
+
+  const result = await registerUseCase({ email, username, password })
+  return { body: result }
+})
 
 router.post('/refreshToken',
   withJWT({ ignoreExpiration: true }),
@@ -47,13 +75,5 @@ router.post('/refreshToken',
       .then((res) => response.send(res))
       .catch(next)
   })
-
-router.post('/register', async (request, response, next) => {
-  const { email, username, password } = request.body
-
-  await registerUseCase({ email, username, password })
-    .then(res => response.send(res))
-    .catch(next)
-})
 
 export default router
