@@ -29,16 +29,3 @@ export function buildEmptySchema (name) {
 export function buildAndCreateSchema (name, schema, required) {
   return createSchema(buildSchema(name, schema, required))
 }
-
-export function defaultSchemaTemplate (route, schemas) {
-  return {
-    input: {
-      body: schemas?.input?.body || createSchema(buildEmptySchema(`${route}InputSchema`)),
-      headers: schemas?.input?.headers || createSchema(buildEmptySchema(`${route}HeadersInputSchema`))
-    },
-    output: {
-      body: schemas?.output?.body || createSchema(buildEmptySchema(`${route}OutputSchema`)),
-      headers: schemas?.output?.headers || createSchema(buildEmptySchema(`${route}HeadersOutputSchema`))
-    }
-  }
-}

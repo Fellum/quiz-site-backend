@@ -1,4 +1,4 @@
-import { buildAndCreateSchema, defaultSchemaTemplate } from '../../../../services/validation/helpers.js'
+import { buildAndCreateSchema } from '../../../../services/validation/helpers.js'
 import * as types from '../../../../services/validation/types.js'
 
 export const inputBody = buildAndCreateSchema('loginInputSchema', types.object({
@@ -11,11 +11,11 @@ export const outputBody = buildAndCreateSchema('loginOutputSchema', types.object
   refreshToken: types.string()
 }, ['token', 'refreshToken']))
 
-export default defaultSchemaTemplate('auth/login', {
+export default {
   input: {
     body: inputBody
   },
   output: {
     body: outputBody
   }
-})
+}

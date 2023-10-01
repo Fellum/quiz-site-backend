@@ -22,7 +22,6 @@ function buildController (meta = {}, impl) {
         console.log(request.body, meta.input.body)
         throw new Error(JSON.stringify(validator.getLastErrors(), null, 2))
       }
-      console.log(request.headers)
       if (_.has(meta, 'input.headers') &&
       !validator.validate(request.headers, meta.input.headers)) {
         throw new Error(JSON.stringify(validator.getLastErrors(), null, 2))

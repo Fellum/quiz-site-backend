@@ -6,11 +6,10 @@ import startSessionUseCase from '../../../core/useCases/auth/startSession.js'
 import registerUseCase from '../../../core/useCases/auth/register.js'
 import withJWT from '../middlewares/withJWT.js'
 import withSession from '../middlewares/withSession.js'
-import withUser from '../middlewares/withUser.js'
 
 import loginSchema from '../schemas/auth/login.js'
 import startSessionSchema from '../schemas/auth/startSession.js'
-import logoutSchema from '../schemas/auth/startSession.js'
+import logoutSchema from '../schemas/auth/logout.js'
 import registerSchema from '../schemas/auth/register.js'
 
 import registerMethod from '../helpers/registerMethod.js'

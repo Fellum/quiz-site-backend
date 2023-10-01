@@ -17,7 +17,8 @@ export function buildCreateUserUseCase ({
       email,
       username,
       ...passwordInfo
-    })
+    }, userRepository.views.default())
+    console.log(newUser)
     return newUser
   }
 }
