@@ -10,6 +10,11 @@ export default class UserRepository extends PostgresRepository {
   }
 
   static views = {
+    default: () => [
+      'id',
+      'username',
+      'email'
+    ],
     withEmailExists: email => {
       const usersQuery = this.getQueryBuilder()
         .select(1)

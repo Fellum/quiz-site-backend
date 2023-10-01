@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import QuestionRepository from '../../../data/postgresql/repositories/QuestionRepository.js'
 import QuizRepository from '../../../data/postgresql/repositories/QuizRepository.js'
 
