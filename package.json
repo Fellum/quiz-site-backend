@@ -4,7 +4,7 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint ./src",
-    "knex": "knex --knexfile ./src/data/postgresql/knexfile.js",
+    "migrate": "knex --knexfile ./src/data/postgresql/knexfile.js migrate:latest",
     "start": "node ./src"
   },
   "type": "module",

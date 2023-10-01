@@ -14,7 +14,7 @@ export function jwtVerify (token, options = {}) {
 
 export function jwtSign (payload) {
   return jwt.sign(payload, authPrivate, {
-    expiresIn: 20,
+    expiresIn: 60 * 5,
     algorithm: 'RS256'
   })
 }
