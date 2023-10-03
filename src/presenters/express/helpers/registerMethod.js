@@ -26,7 +26,7 @@ function buildController (meta = {}, impl) {
       !validator.validate(request.headers, meta.input.headers)) {
         throw new Error(JSON.stringify(validator.getLastErrors(), null, 2))
       }
-      const result = await impl(request)
+      const result = await impl(request, response)
       if (_.has(meta, 'output.body') &&
       !validator.validate(result.body || {}, meta.output.body)) {
         throw new Error(JSON.stringify(validator.getLastErrors()))

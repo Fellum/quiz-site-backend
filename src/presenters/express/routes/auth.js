@@ -9,7 +9,7 @@ import withSession from '../middlewares/withSession.js'
 
 import loginSchema from '../schemas/auth/login.js'
 import startSessionSchema from '../schemas/auth/startSession.js'
-import logoutSchema from '../schemas/auth/logout.js'
+import refreshTokenSchema from '../schemas/auth/refreshToken.js'
 import registerSchema from '../schemas/auth/register.js'
 
 import registerMethod from '../helpers/registerMethod.js'
@@ -21,11 +21,16 @@ registerMethod(router, {
   route: '/login',
   auth: 'none',
   ...loginSchema
-}, async request => {
+}, async (request, response) => {
   const { email, password } = request.body
-  const result = await loginUseCase(email, password)
+  const { token, ...rest } = await loginUseCase(email, password)
+  response.cookie('token', token, {
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    secure: false,
+    httpOnly: true
+  })
   return {
-    body: result
+    body: rest
   }
 })
 
@@ -34,18 +39,22 @@ registerMethod(router, {
   route: '/startSession',
   auth: 'none',
   ...startSessionSchema
-}, async () => {
-  const result = await startSessionUseCase()
+}, async (request, response) => {
+  const { token, ...rest } = await startSessionUseCase()
+  response.cookie('token', token, {
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    secure: false,
+    httpOnly: true
+  })
   return {
-    body: result
+    body: rest
   }
 })
 
 registerMethod(router, {
   method: 'post',
   route: '/logout',
-  auth: 'user',
-  ...logoutSchema
+  auth: 'anonymousOrUser'
 }, async request => {
   const { session: { id: sessionId } } = request
   await logoutUseCase(sessionId)
@@ -64,15 +73,27 @@ registerMethod(router, {
   return { body: result }
 })
 
-router.post('/refreshToken',
-  withJWT({ ignoreExpiration: true }),
-  withSession(),
-  async (request, response, next) => {
-    const { refreshToken } = request.body
-    const { session: { id: sessionId } } = request
-    await refreshTokenUseCase(sessionId, refreshToken)
-      .then((res) => response.send(res))
-      .catch(next)
+registerMethod(router, {
+  method: 'post',
+  route: '/refreshToken',
+  customAuth: [
+    withJWT({ ignoreExpiration: true }),
+    withSession()
+  ],
+  ...refreshTokenSchema
+}, async (request, response) => {
+  const { refreshToken } = request.body
+  const { session: { id: sessionId } } = request
+  const { token, ...rest } = await refreshTokenUseCase(sessionId, refreshToken)
+
+  response.cookie('token', token, {
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    secure: false,
+    httpOnly: true
   })
+  return {
+    body: rest
+  }
+})
 
 export default router
