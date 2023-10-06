@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import QuestionRepository from '../../../data/postgresql/repositories/QuestionRepository.js'
 
 export function buildUseCase ({
@@ -6,10 +7,17 @@ export function buildUseCase ({
   return async (searchRequest) => {
     const {
       offset = 0,
-      limit = 1000
+      limit = 1000,
+      filter: {
+        quizId
+      }
     } = searchRequest
 
-    const [values, count] = await questionRepository.findAndCount({}, '*', { offset, limit })
+    const query = _.pickBy({
+      quizId
+    }, _.isUndefined)
+
+    const [values, count] = await questionRepository.findAndCount(query, '*', { offset, limit })
 
     return { values, count }
   }
