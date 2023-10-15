@@ -4,8 +4,8 @@ import * as types from '../../../../services/validation/types.js'
 export const inputBody = buildAndCreateSchema('startSessionInputSchema', types.object())
 
 export const outputBody = buildAndCreateSchema('startSessionOutputSchema', types.object({
-  refreshToken: types.string()
-}, ['refreshToken']))
+  token: types.string()
+}, ['token']))
 
 export default {
   input: {

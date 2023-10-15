@@ -7,8 +7,8 @@ export const inputBody = buildAndCreateSchema('loginInputSchema', types.object({
 }, ['email', 'password']))
 
 export const outputBody = buildAndCreateSchema('loginOutputSchema', types.object({
-  refreshToken: types.string()
-}, ['refreshToken']))
+  token: types.string()
+}, ['token']))
 
 export default {
   input: {
