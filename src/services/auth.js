@@ -2,25 +2,40 @@ import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import { readFileSync } from 'fs'
 
-const authPrivate = readFileSync('keys/authPrivate.key')
-const authPublic = readFileSync('keys/authPublic.key')
+const keys = {
+  ACCESS: {
+    private: readFileSync('keys/authAccessPrivate.key'),
+    public: readFileSync('keys/authAccessPublic.key')
+  },
+  REFRESH: {
+    private: readFileSync('keys/authRefreshPrivate.key'),
+    public: readFileSync('keys/authRefreshPublic.key')
+  }
+}
 
-export function jwtVerify (token, options = {}) {
-  return jwt.verify(token, authPublic, {
+function getKeyByKeyType (keyType) {
+  const key = keys[keyType]
+  if (!keyType || !key) {
+    throw new Error('Invalid keyType')
+  }
+  return key
+}
+
+export function jwtVerify (token, { keyType = 'ACCESS', ...otherOptions } = {}) {
+  const key = getKeyByKeyType(keyType)
+  return jwt.verify(token, key.public, {
     algorithm: 'RS256',
-    ...options
+    ...otherOptions
   })
 }
 
-export function jwtSign (payload) {
-  return jwt.sign(payload, authPrivate, {
+export function jwtSign (payload, options = { keyType: 'ACCESS' }) {
+  const { keyType } = options
+  const key = getKeyByKeyType(keyType)
+  return jwt.sign(payload, key.private, {
     expiresIn: 60 * 5,
     algorithm: 'RS256'
   })
-}
-
-export function jwtCreateRefreshToken () {
-  return crypto.randomBytes(16).toString('hex')
 }
 
 export function passwordHash (password) {

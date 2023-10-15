@@ -5,12 +5,13 @@ export function buildUseCase ({
   sessionRepository,
   authService
 }) {
-  return async (sessionId, refreshToken) => {
-    const foundSession = await sessionRepository.getById(sessionId)
-    if (!foundSession) throw new Error('Session expired')
-    if (foundSession.refreshToken !== refreshToken) throw new Error('Invalid refresh token')
+  return async (session, refreshToken) => {
+    const { id: sessionId, refreshToken: validRefreshToken } = session
+    if (validRefreshToken !== refreshToken) throw new Error('Invalid refresh token')
 
-    const newRefreshToken = authService.jwtCreateRefreshToken()
+    const newRefreshToken = authService.jwtSign({
+      sessionId
+    }, { keyType: 'REFRESH' })
     await sessionRepository.updateById(sessionId, {
       refreshToken: newRefreshToken
     })
