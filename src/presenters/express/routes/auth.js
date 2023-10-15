@@ -23,8 +23,8 @@ registerMethod(router, {
   ...loginSchema
 }, async (request, response) => {
   const { email, password } = request.body
-  const { token, ...rest } = await loginUseCase(email, password)
-  response.cookie('token', token, {
+  const { refreshToken, ...rest } = await loginUseCase(email, password)
+  response.cookie('refreshToken', refreshToken, {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     secure: false,
     httpOnly: true
@@ -40,8 +40,8 @@ registerMethod(router, {
   auth: 'none',
   ...startSessionSchema
 }, async (request, response) => {
-  const { token, ...rest } = await startSessionUseCase()
-  response.cookie('token', token, {
+  const { refreshToken, ...rest } = await startSessionUseCase()
+  response.cookie('refreshToken', refreshToken, {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     secure: false,
     httpOnly: true
@@ -82,11 +82,11 @@ registerMethod(router, {
   ],
   ...refreshTokenSchema
 }, async (request, response) => {
-  const { refreshToken } = request.body
+  const { refreshToken: oldRefreshToken } = request.cookies
   const { session: { id: sessionId } } = request
-  const { token, ...rest } = await refreshTokenUseCase(sessionId, refreshToken)
+  const { refreshToken: newRefreshToken, ...rest } = await refreshTokenUseCase(sessionId, oldRefreshToken)
 
-  response.cookie('token', token, {
+  response.cookie('refreshToken', newRefreshToken, {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     secure: false,
     httpOnly: true
