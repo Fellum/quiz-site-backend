@@ -77,14 +77,14 @@ registerMethod(router, {
   method: 'post',
   route: '/refreshToken',
   customAuth: [
-    withJWT({ ignoreExpiration: true }),
+    withJWT({ ignoreExpiration: true, keyType: 'REFRESH', extractionStrategy: req => req.cookies.refreshToken }),
     withSession()
   ],
   ...refreshTokenSchema
 }, async (request, response) => {
   const { refreshToken: oldRefreshToken } = request.cookies
-  const { session: { id: sessionId } } = request
-  const { refreshToken: newRefreshToken, ...rest } = await refreshTokenUseCase(sessionId, oldRefreshToken)
+  const { session } = request
+  const { refreshToken: newRefreshToken, ...rest } = await refreshTokenUseCase(session, oldRefreshToken)
 
   response.cookie('refreshToken', newRefreshToken, {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
