@@ -51,7 +51,7 @@ router.patch('/',
 
 router.get('/',
   async (request, response, next) => {
-    const { offset, limit } = request.body
+    const { offset, limit } = request.query
 
     await findUseCase({ offset, limit })
       .then(res => response.send(res))

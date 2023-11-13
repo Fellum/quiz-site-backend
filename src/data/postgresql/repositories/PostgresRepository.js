@@ -81,4 +81,18 @@ export default class PostgresRepository {
       .del()
       .where({ id })
   }
+
+  static rowToJson (knex, alias = 'item') {
+    return knex.raw(
+      'row_to_json(??.*)',
+      [alias]
+    )
+  }
+
+  static rowToArray (alias = 'items') {
+    return knex.raw(
+      'coalesce(json_agg(??.*), \'[]\')',
+      [alias]
+    )
+  }
 }

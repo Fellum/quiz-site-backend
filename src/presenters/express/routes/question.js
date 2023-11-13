@@ -21,6 +21,7 @@ router.post('/',
     const { id: userId } = request.user
 
     await checkAccessUseCase({ quizId, userId })
+      .catch(next)
     await createUseCase({ text, answers, answerType, ord, quizId })
       .then(res => response.send(res))
       .catch(next)
@@ -59,7 +60,11 @@ router.patch('/',
 
 router.get('/',
   async (request, response, next) => {
-    const { offset, limit, filter = {} } = request.body
+    const { offset, limit, quizId } = request.query
+
+    const filter = {
+      quizId
+    }
 
     await findUseCase({ offset, limit, filter })
       .then(res => response.send(res))

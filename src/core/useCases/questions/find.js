@@ -13,7 +13,7 @@ export function buildUseCase ({
       }
     } = searchRequest
 
-    const query = _.pickBy({
+    const query = _.omitBy({
       quizId
     }, _.isUndefined)
 
