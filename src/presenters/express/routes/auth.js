@@ -4,6 +4,7 @@ import logoutUseCase from '../../../core/useCases/auth/logout.js'
 import refreshTokenUseCase from '../../../core/useCases/auth/refreshToken.js'
 import startSessionUseCase from '../../../core/useCases/auth/startSession.js'
 import registerUseCase from '../../../core/useCases/auth/register.js'
+import getMeUseCase from '../../../core/useCases/auth/getMe.js'
 import withJWT from '../middlewares/withJWT.js'
 import withSession from '../middlewares/withSession.js'
 
@@ -59,6 +60,18 @@ registerMethod(router, {
   const { session: { id: sessionId } } = request
   await logoutUseCase(sessionId)
   return {}
+})
+
+registerMethod(router, {
+  method: 'get',
+  route: '/getMe',
+  auth: 'user'
+}, async request => {
+  const { user } = request
+  const result = await getMeUseCase(user)
+  return {
+    body: result
+  }
 })
 
 registerMethod(router, {

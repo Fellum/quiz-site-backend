@@ -9,7 +9,6 @@ import updateUseCase from '../../../core/useCases/quizzes/update.js'
 import withJWT from '../middlewares/withJWT.js'
 import withSession from '../middlewares/withSession.js'
 import withUser from '../middlewares/withUser.js'
-import uploadMiddleware from '../middlewares/fileUploader.js'
 
 const router = Router()
 
@@ -17,7 +16,6 @@ router.use(withJWT(), withSession())
 
 router.post('/',
   withUser(),
-  uploadMiddleware.single('quizImg'),
   async (request, response, next) => {
     const { title, description } = request.body
     const { id: ownerUserId } = request.user

@@ -6,7 +6,7 @@ export function buildUseCase ({
 }) {
   return async ({ text, answers, answerType, ord, quizId }) => {
     const preparedAnswers = { value: answers || '' }
-    const newQuiz = await questionRepository.create({ text, preparedAnswers, answerType, ord, quizId })
+    const newQuiz = await questionRepository.create({ text, answers: preparedAnswers, answerType, ord, quizId })
 
     return newQuiz
   }

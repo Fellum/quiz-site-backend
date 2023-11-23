@@ -11,8 +11,6 @@ import withSession from '../middlewares/withSession.js'
 import withUser from '../middlewares/withUser.js'
 import uploadMiddleware from '../middlewares/fileUploader.js'
 
-
-
 const router = Router()
 
 router.use(withJWT(), withSession())
