@@ -1,6 +1,6 @@
 import { createClient } from 'redis'
-import { development } from './config.js'
-const client = createClient(development)
+import { staging } from './config.js'
+const client = createClient(staging)
 
 client.on('error', err => console.log('Redis Client Error', err))
 

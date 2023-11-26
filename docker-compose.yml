@@ -4,14 +4,24 @@ services:
   postgres:
     image: postgres:15
     environment:
-      - POSTGRES_DB=quiz-site
-      - POSTGRES_USER=quiz-site
+      - POSTGRES_DB=quiz_site
+      - POSTGRES_USER=quiz_site
       - POSTGRES_HOST_AUTH_METHOD=trust
       - TZ=UTC
     ports:
       - 5432
     volumes:
       - quizpostgres:/var/lib/postgresql/data
+      - quizstorage:/usr/src/app/uploads
+      
+
+  redis:
+    image: redis/redis-stack-server:latest
+    command: ["redis-server", "--appendonly yes", "--save 60 1000",  "--requirepass redisPassword"]
+    ports:
+      - 6379
+    volumes:
+      - quizredis:/data
 
   web:
     build: .
@@ -21,22 +31,15 @@ services:
       - /usr/app/node_modules
     environment:
       - NODE_ENV=production
-    ports:
-      - "80:8080"
     depends_on:
       - postgres
-      # - migration
+      - redis
+    restart: on-failure
 volumes:
   quizpostgres:
     external: true
+  quizredis:
+    external: true
+  quizstorage:
+    external: true
 
-  # migration:
-  #   build: .
-  #   command: 'npm run migrate'
-  #   volumes:
-  #     - .:/usr/app/
-  #     - /usr/app/node_modules
-  #   environment:
-  #     - NODE_ENV=production
-  #   depends_on:
-  #     - postgres
