@@ -53,9 +53,9 @@ router.patch('/',
 
 router.get('/',
   async (request, response, next) => {
-    const { offset, limit } = request.query
+    const { offset, limit, ownerUserId } = request.query
 
-    await findUseCase({ offset, limit })
+    await findUseCase({ offset, limit, ownerUserId })
       .then(res => response.send(res))
       .catch(next)
   })
