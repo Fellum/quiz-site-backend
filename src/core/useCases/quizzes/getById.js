@@ -4,7 +4,7 @@ export function buildUseCase ({
   quizRepository
 }) {
   return async (quizId) => {
-    const foundQuiz = await quizRepository.findOne({ id: quizId })
+    const foundQuiz = await quizRepository.findOne({ id: quizId }, quizRepository.views.default())
     if (!foundQuiz) throw new Error('Quiz not found')
 
     return foundQuiz

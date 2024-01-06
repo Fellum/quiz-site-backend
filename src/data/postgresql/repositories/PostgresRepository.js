@@ -68,11 +68,11 @@ export default class PostgresRepository {
       .then(([res]) => res)
   }
 
-  static updateById (id, value) {
+  static updateById (id, value, view = '*') {
     return knex(this.tableName)
       .update(value)
       .where({ id })
-      .returning('*')
+      .returning(view)
       .then(([res]) => res)
   }
 

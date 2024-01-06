@@ -15,7 +15,7 @@ export function buildUseCase ({
       ownerUserId
     }, _.isUndefined)
 
-    const [values, count] = await quizRepository.findAndCount(query, '*', { offset, limit })
+    const [values, count] = await quizRepository.findAndCount(query, quizRepository.views.default(), { offset, limit })
 
     return { values, count }
   }

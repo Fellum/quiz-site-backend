@@ -37,13 +37,14 @@ router.get('/:id',
 router.patch('/',
   withUser(),
   async (request, response, next) => {
-    const { id, title, description } = request.body
+    const { id, title, description, imageId } = request.body
     const { id: userId } = request.user
 
     const value = _.omitBy({
       id,
       title,
-      description
+      description,
+      imageId
     }, _.isUndefined)
 
     await updateUseCase(userId, value)
