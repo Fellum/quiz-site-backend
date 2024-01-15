@@ -13,9 +13,9 @@ import uploadMiddleware from '../middlewares/fileUploader.js'
 
 const router = Router()
 
-router.use(withJWT(), withSession())
-
 router.post('/upload',
+  withJWT(),
+  withSession(),
   withUser(),
   uploadMiddleware.single('file'),
   async (request, response, next) => {
@@ -31,10 +31,10 @@ router.get('/download/*',
   async (request, response, next) => {
     const result = await downloadUseCase({ externalPath: request.originalUrl })
       .catch(next)
-    response.sendFile(path.resolve(result.internalPath))
-    response.setHeader('Content-Type', result.mimetype)
-    // response.pipe(fileStream)
-    // response.send(result)
+    const headers = {
+      'Content-Type': result.mimetype
+    }
+    response.sendFile(path.resolve(result.internalPath), { headers, lastModified: false }) // TODO: remove lastmodified on prod
   })
 
 export default router
