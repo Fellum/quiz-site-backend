@@ -17,12 +17,10 @@ router.use(withJWT(), withSession())
 router.post('/',
   withUser(),
   async (request, response, next) => {
-    const { title, description } = request.body
+    const { title, description, imageId } = request.body
     const { id: ownerUserId } = request.user
 
-    console.log(request.body)
-
-    await createUseCase({ title, description, ownerUserId })
+    await createUseCase({ title, description, ownerUserId, imageId })
       .then(res => response.send(res))
       .catch(next)
   })
