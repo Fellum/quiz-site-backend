@@ -6,6 +6,7 @@ import findUseCase from '../../../core/useCases/quizzes/find.js'
 import getByIdUseCase from '../../../core/useCases/quizzes/getById.js'
 import deleteUseCase from '../../../core/useCases/quizzes/delete.js'
 import updateUseCase from '../../../core/useCases/quizzes/update.js'
+import validateAnswers from '../../../core/useCases/quizzes/validateAnswers.js'
 import withJWT from '../middlewares/withJWT.js'
 import withSession from '../middlewares/withSession.js'
 import withUser from '../middlewares/withUser.js'
@@ -71,4 +72,16 @@ router.delete('/',
     response.end()
   })
 
+router.post('/validateAnswers',
+  withUser(),
+  async (request, response, next) => {
+    const {
+      quizId,
+      answers
+    } = request.body
+    await validateAnswers(quizId, answers)
+      .then(res => response.send(res))
+      .catch(next)
+    response.end()
+  })
 export default router

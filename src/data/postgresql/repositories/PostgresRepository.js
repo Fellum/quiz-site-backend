@@ -46,7 +46,7 @@ export default class PostgresRepository {
     return Promise.all([valuesQuery, countQuery])
   }
 
-  static find (query = {}, view = '*', options = { offset: 0, limit: 0 }) {
+  static find (query = {}, view = '*', options = { offset: 0, limit: 9999 }) {
     const { ids, ...basicQuery } = query
 
     const additionalQuery = query => {
