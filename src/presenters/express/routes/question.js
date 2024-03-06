@@ -53,7 +53,7 @@ router.patch('/',
     }, _.isUndefined)
 
     await checkAccessUseCase({ questionId: id, userId })
-      .then(() => updateUseCase(value))
+      .then(() => updateUseCase(userId, value))
       .then(res => response.send(res))
       .catch(next)
   })
