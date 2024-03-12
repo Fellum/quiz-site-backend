@@ -73,7 +73,6 @@ router.delete('/',
   })
 
 router.post('/validateAnswers',
-  withUser(),
   async (request, response, next) => {
     const {
       quizId,
