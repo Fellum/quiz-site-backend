@@ -40,7 +40,7 @@ router.get('/:id',
 
 router.patch('/',
   async (request, response, next) => {
-    const { id, text, answers, answerType, ord, quizId } = request.body
+    const { id, text, answerType, answers, ord } = request.body
     const { id: userId } = request.user
 
     const value = _.omitBy({
@@ -48,12 +48,11 @@ router.patch('/',
       text,
       answers,
       answerType,
-      ord,
-      quizId
+      ord
     }, _.isUndefined)
 
     await checkAccessUseCase({ questionId: id, userId })
-      .then(() => updateUseCase(userId, value))
+      .then(() => updateUseCase(value))
       .then(res => response.send(res))
       .catch(next)
   })
