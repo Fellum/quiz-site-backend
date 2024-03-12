@@ -1,7 +1,7 @@
 export function buildUseCase () {
   return async (user) => {
-    const { username, email } = user
-    return { username, email }
+    const { username, email, id } = user
+    return { username, email, id }
   }
 }
 
